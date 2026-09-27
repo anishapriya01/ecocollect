@@ -17,33 +17,22 @@ const PORT = process.env.PORT || 8080;
 // ---------------------------------------------------------------------------
 
 function buildPoolConfig() {
-    if (process.env.DATABASE_URL) {
-        return {
-            uri: process.env.DATABASE_URL,
-            waitForConnections: true,
-            connectionLimit: 10
-        };
-    }
-
-    const config = {
-        host: process.env.MYSQL_HOST || 'localhost',
-        port: parseInt(process.env.MYSQL_PORT || '3306', 10),
-        user: process.env.MYSQL_USER || 'root',
-        password: process.env.MYSQL_PASSWORD || '',
+    return {
+        host: process.env.MYSQL_HOST,
+        port: parseInt(process.env.MYSQL_PORT || '4000', 10),
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
         database: process.env.MYSQL_DATABASE || 'ecocollect',
+
         waitForConnections: true,
         connectionLimit: 10,
-        queueLimit: 0
-    };
+        queueLimit: 0,
 
-    if (process.env.MYSQL_SSL_CA) {
-        config.ssl = {
-            ca: fs.readFileSync(process.env.MYSQL_SSL_CA),
+        ssl: {
+            minVersion: 'TLSv1.2',
             rejectUnauthorized: true
-        };
-    }
-
-    return config;
+        }
+    };
 }
 
 const pool = mysql.createPool(buildPoolConfig());
