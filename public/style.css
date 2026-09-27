@@ -1,0 +1,918 @@
+
+/* =========================================================
+   EcoCollect — Premium SaaS / Stripe + Linear Design System
+   Clean • Modern • Accessible • Responsive • Vibrant
+   ========================================================= */
+
+/* ---------- Fonts ---------- */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+
+/* =========================================================
+   DESIGN TOKENS
+   ========================================================= */
+
+:root {
+  /* Brand */
+  --eco-primary: #10B981;
+  --eco-primary-dark: #047857;
+  --eco-primary-darker: #065F46;
+  --eco-primary-light: #34D399;
+  --eco-primary-soft: #ECFDF5;
+
+  /* Category Colors */
+  --eco-blue: #3B82F6;
+  --eco-blue-soft: #EFF6FF;
+
+  --eco-purple: #8B5CF6;
+  --eco-purple-soft: #F5F3FF;
+
+  --eco-orange: #F59E0B;
+  --eco-orange-soft: #FFFBEB;
+
+  /* Neutral Palette */
+  --eco-white: #FFFFFF;
+  --eco-gray-25: #FCFCFD;
+  --eco-gray-50: #F9FAFB;
+  --eco-gray-100: #F3F4F6;
+  --eco-gray-200: #E5E7EB;
+  --eco-gray-300: #D1D5DB;
+  --eco-gray-400: #9CA3AF;
+  --eco-gray-500: #6B7280;
+  --eco-gray-600: #4B5563;
+  --eco-gray-700: #374151;
+  --eco-gray-800: #1F2937;
+  --eco-gray-900: #111827;
+
+  /* Text */
+  --eco-text: #111827;
+  --eco-text-secondary: #4B5563;
+  --eco-text-muted: #6B7280;
+
+  /* Borders */
+  --eco-border: rgba(17, 24, 39, 0.08);
+  --eco-border-strong: #E5E7EB;
+
+  /* Shadows */
+  --eco-shadow-xs:
+    0 1px 2px rgba(16, 24, 40, 0.04);
+
+  --eco-shadow-sm:
+    0 2px 6px rgba(16, 24, 40, 0.05),
+    0 1px 2px rgba(16, 24, 40, 0.04);
+
+  --eco-shadow-md:
+    0 8px 24px rgba(16, 24, 40, 0.08),
+    0 2px 6px rgba(16, 24, 40, 0.04);
+
+  --eco-shadow-lg:
+    0 18px 45px rgba(16, 24, 40, 0.10),
+    0 5px 15px rgba(16, 24, 40, 0.05);
+
+  --eco-shadow-green:
+    0 12px 30px rgba(16, 185, 129, 0.16);
+
+  /* Radius */
+  --eco-radius-xs: 6px;
+  --eco-radius-sm: 8px;
+  --eco-radius-md: 12px;
+  --eco-radius-lg: 16px;
+  --eco-radius-xl: 20px;
+  --eco-radius-2xl: 24px;
+
+  /* Motion */
+  --eco-fast: 140ms;
+  --eco-normal: 220ms;
+  --eco-slow: 320ms;
+
+  --eco-ease:
+    cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+/* =========================================================
+   GLOBAL BASE
+   ========================================================= */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--eco-text);
+  background:
+    radial-gradient(
+      circle at 20% 0%,
+      rgba(16, 185, 129, 0.035),
+      transparent 30%
+    ),
+    var(--eco-gray-50);
+
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--eco-gray-900);
+  letter-spacing: -0.025em;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+/* =========================================================
+   SELECTION
+   ========================================================= */
+
+::selection {
+  background: rgba(16, 185, 129, 0.18);
+  color: var(--eco-primary-darker);
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@layer utilities {
+
+  .animate-fade-in {
+    animation:
+      fadeIn 0.35s var(--eco-ease) forwards;
+  }
+
+  .animate-slide-up {
+    animation:
+      slideUp 0.4s var(--eco-ease) forwards;
+  }
+
+  .animate-scale-in {
+    animation:
+      scaleIn 0.3s var(--eco-ease) forwards;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* =========================================================
+   PREMIUM CARD SYSTEM
+   ========================================================= */
+
+.eco-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--eco-border);
+  border-radius: var(--eco-radius-lg);
+  box-shadow: var(--eco-shadow-sm);
+
+  transition:
+    transform var(--eco-normal) var(--eco-ease),
+    box-shadow var(--eco-normal) var(--eco-ease),
+    border-color var(--eco-normal) ease;
+}
+
+.eco-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(16, 185, 129, 0.18);
+  box-shadow: var(--eco-shadow-md);
+}
+
+
+/* =========================================================
+   CATEGORY CARDS
+   ========================================================= */
+
+.category-card {
+  position: relative;
+  overflow: hidden;
+
+  border: 1px solid var(--eco-border-strong);
+  border-radius: var(--eco-radius-lg);
+
+  background: var(--eco-white);
+
+  transition:
+    transform var(--eco-normal) var(--eco-ease),
+    border-color var(--eco-normal) ease,
+    background-color var(--eco-normal) ease,
+    box-shadow var(--eco-normal) var(--eco-ease);
+}
+
+.category-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow: var(--eco-shadow-md);
+}
+
+.category-card:active {
+  transform: translateY(-1px) scale(0.995);
+}
+
+
+/* Organic */
+
+#cat-card-Organic.selected {
+  border-color: #10B981 !important;
+  background:
+    linear-gradient(
+      145deg,
+      #ECFDF5 0%,
+      #FFFFFF 100%
+    ) !important;
+
+  box-shadow:
+    0 10px 30px -8px rgba(16, 185, 129, 0.25),
+    inset 0 0 0 1px rgba(16, 185, 129, 0.06) !important;
+}
+
+
+/* Recyclable */
+
+#cat-card-Recyclable.selected {
+  border-color: #3B82F6 !important;
+  background:
+    linear-gradient(
+      145deg,
+      #EFF6FF 0%,
+      #FFFFFF 100%
+    ) !important;
+
+  box-shadow:
+    0 10px 30px -8px rgba(59, 130, 246, 0.22),
+    inset 0 0 0 1px rgba(59, 130, 246, 0.05) !important;
+}
+
+
+/* E-Waste */
+
+#cat-card-E-Waste.selected {
+  border-color: #8B5CF6 !important;
+  background:
+    linear-gradient(
+      145deg,
+      #F5F3FF 0%,
+      #FFFFFF 100%
+    ) !important;
+
+  box-shadow:
+    0 10px 30px -8px rgba(139, 92, 246, 0.22),
+    inset 0 0 0 1px rgba(139, 92, 246, 0.05) !important;
+}
+
+
+/* Hazardous */
+
+#cat-card-Hazardous.selected {
+  border-color: #F59E0B !important;
+  background:
+    linear-gradient(
+      145deg,
+      #FFFBEB 0%,
+      #FFFFFF 100%
+    ) !important;
+
+  box-shadow:
+    0 10px 30px -8px rgba(245, 158, 11, 0.22),
+    inset 0 0 0 1px rgba(245, 158, 11, 0.05) !important;
+}
+
+
+/* Selected Check Icon */
+
+.category-card .card-check-icon {
+  opacity: 0;
+  transform: scale(0.8);
+  transition:
+    opacity var(--eco-fast) ease,
+    transform var(--eco-normal) var(--eco-ease);
+}
+
+.category-card.selected .card-check-icon {
+  display: flex !important;
+  opacity: 1;
+  transform: scale(1);
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.nav-tab-btn {
+  position: relative;
+
+  border: 1px solid transparent;
+  border-radius: var(--eco-radius-sm);
+
+  transition:
+    color var(--eco-fast) ease,
+    background-color var(--eco-fast) ease,
+    border-color var(--eco-fast) ease,
+    box-shadow var(--eco-fast) ease,
+    transform var(--eco-fast) ease;
+}
+
+.nav-tab-btn:hover {
+  color: var(--eco-primary-dark);
+  background: rgba(16, 185, 129, 0.045);
+}
+
+.nav-tab-btn:active {
+  transform: scale(0.98);
+}
+
+.nav-tab-btn.active {
+  color: #047857 !important;
+  font-weight: 600 !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ECFDF5,
+      #F0FDF4
+    ) !important;
+
+  border-color: #A7F3D0 !important;
+
+  box-shadow:
+    0 2px 8px rgba(16, 185, 129, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.nav-tab-btn.active::after {
+  content: '';
+
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: -1px;
+
+  height: 2px;
+
+  background: var(--eco-primary);
+  border-radius: 999px;
+
+  box-shadow:
+    0 0 10px rgba(16, 185, 129, 0.35);
+}
+
+
+/* =========================================================
+   TIMESLOT PILLS
+   ========================================================= */
+
+.timeslot-pill {
+  border: 1px solid var(--eco-gray-200);
+  background: var(--eco-white);
+
+  border-radius: 999px;
+
+  transition:
+    color var(--eco-fast) ease,
+    background-color var(--eco-fast) ease,
+    border-color var(--eco-fast) ease,
+    box-shadow var(--eco-fast) ease,
+    transform var(--eco-fast) ease;
+}
+
+.timeslot-pill:hover {
+  border-color: #6EE7B7;
+  background: #F0FDF4;
+  transform: translateY(-1px);
+}
+
+.timeslot-pill:active {
+  transform: scale(0.97);
+}
+
+.timeslot-pill.active {
+  border-color: #10B981 !important;
+  background:
+    linear-gradient(
+      135deg,
+      #ECFDF5,
+      #D1FAE5
+    ) !important;
+
+  color: #064E3B !important;
+  font-weight: 600;
+
+  box-shadow:
+    0 4px 12px -4px rgba(16, 185, 129, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+
+/* =========================================================
+   BUTTON SYSTEM
+   ========================================================= */
+
+.eco-btn {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 42px;
+  padding: 0 18px;
+
+  border: 1px solid transparent;
+  border-radius: 10px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform var(--eco-fast) var(--eco-ease),
+    box-shadow var(--eco-normal) var(--eco-ease),
+    background-color var(--eco-fast) ease,
+    border-color var(--eco-fast) ease;
+}
+
+.eco-btn:hover {
+  transform: translateY(-1px);
+}
+
+.eco-btn:active {
+  transform: translateY(0) scale(0.985);
+}
+
+.eco-btn-primary {
+  color: white;
+  background: var(--eco-primary-dark);
+
+  box-shadow:
+    0 4px 12px rgba(4, 120, 87, 0.20);
+}
+
+.eco-btn-primary:hover {
+  background: #059669;
+
+  box-shadow:
+    0 8px 20px rgba(16, 185, 129, 0.24);
+}
+
+
+/* =========================================================
+   RANGE SLIDER
+   ========================================================= */
+
+input[type="range"] {
+  width: 100%;
+  height: 5px;
+
+  border-radius: 999px;
+  background: #E5E7EB;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 999px;
+  background: #E5E7EB;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+
+  width: 18px;
+  height: 18px;
+
+  margin-top: -6.5px;
+
+  border-radius: 50%;
+  border: 3px solid #FFFFFF;
+
+  background: #10B981;
+
+  cursor: grab;
+
+  box-shadow:
+    0 2px 6px rgba(16, 185, 129, 0.30),
+    0 0 0 1px rgba(16, 185, 129, 0.15);
+
+  transition:
+    transform var(--eco-fast) var(--eco-ease),
+    box-shadow var(--eco-fast) ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+
+  box-shadow:
+    0 3px 10px rgba(16, 185, 129, 0.35),
+    0 0 0 4px rgba(16, 185, 129, 0.10);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.08);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 5px;
+  border-radius: 999px;
+  background: #E5E7EB;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+  border: 3px solid #FFFFFF;
+
+  background: #10B981;
+
+  cursor: grab;
+
+  box-shadow:
+    0 2px 6px rgba(16, 185, 129, 0.30),
+    0 0 0 1px rgba(16, 185, 129, 0.15);
+}
+
+
+/* =========================================================
+   INPUTS / SELECTS / TEXTAREAS
+   ========================================================= */
+
+input:not([type="range"]),
+select,
+textarea {
+  border: 1px solid var(--eco-gray-200);
+  border-radius: 10px;
+
+  background: #FFFFFF;
+
+  color: var(--eco-gray-900);
+
+  transition:
+    border-color var(--eco-fast) ease,
+    box-shadow var(--eco-fast) ease,
+    background-color var(--eco-fast) ease;
+}
+
+input:not([type="range"]):hover,
+select:hover,
+textarea:hover {
+  border-color: #A7F3D0;
+}
+
+input:not([type="range"]):focus,
+select:focus,
+textarea:focus {
+  outline: none;
+
+  border-color: #10B981;
+
+  box-shadow:
+    0 0 0 3px rgba(16, 185, 129, 0.10);
+
+  background: #FFFFFF;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9CA3AF;
+}
+
+
+/* =========================================================
+   FOCUS ACCESSIBILITY
+   ========================================================= */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(16, 185, 129, 0.22);
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   BADGES / STATUS
+   ========================================================= */
+
+.eco-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 5px 10px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  line-height: 1;
+}
+
+.eco-badge-green {
+  color: #047857;
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+}
+
+.eco-badge-blue {
+  color: #1D4ED8;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+}
+
+.eco-badge-purple {
+  color: #6D28D9;
+  background: #F5F3FF;
+  border: 1px solid #DDD6FE;
+}
+
+.eco-badge-orange {
+  color: #B45309;
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+}
+
+
+/* =========================================================
+   MODALS
+   ========================================================= */
+
+.eco-modal {
+  background: rgba(255, 255, 255, 0.96);
+
+  border: 1px solid rgba(17, 24, 39, 0.08);
+
+  border-radius: var(--eco-radius-xl);
+
+  box-shadow:
+    0 30px 80px rgba(15, 23, 42, 0.16),
+    0 8px 25px rgba(15, 23, 42, 0.08);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  animation:
+    scaleIn 0.25s var(--eco-ease);
+}
+
+
+/* =========================================================
+   GLASS HEADER / SURFACES
+   ========================================================= */
+
+.eco-glass {
+  background:
+    rgba(255, 255, 255, 0.72);
+
+  border: 1px solid rgba(255, 255, 255, 0.7);
+
+  box-shadow:
+    0 8px 30px rgba(15, 23, 42, 0.06);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+
+/* =========================================================
+   DIVIDERS
+   ========================================================= */
+
+.eco-divider {
+  height: 1px;
+  width: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #E5E7EB 20%,
+      #E5E7EB 80%,
+      transparent
+    );
+}
+
+
+/* =========================================================
+   EMPTY / LOADING STATES
+   ========================================================= */
+
+.eco-skeleton {
+  position: relative;
+  overflow: hidden;
+
+  background: #F3F4F6;
+  border-radius: 8px;
+}
+
+.eco-skeleton::after {
+  content: '';
+
+  position: absolute;
+  inset: 0;
+
+  transform: translateX(-100%);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.65),
+      transparent
+    );
+
+  animation:
+    skeleton 1.5s infinite;
+}
+
+@keyframes skeleton {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+
+/* =========================================================
+   TOOLTIP
+   ========================================================= */
+
+.eco-tooltip {
+  position: relative;
+}
+
+.eco-tooltip::after {
+  content: attr(data-tooltip);
+
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+
+  transform:
+    translateX(-50%)
+    translateY(3px);
+
+  padding: 6px 9px;
+
+  border-radius: 7px;
+
+  background: #111827;
+  color: #FFFFFF;
+
+  font-size: 11px;
+  font-weight: 500;
+
+  white-space: nowrap;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition:
+    opacity var(--eco-fast) ease,
+    transform var(--eco-fast) var(--eco-ease);
+
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.15);
+
+  z-index: 100;
+}
+
+.eco-tooltip:hover::after {
+  opacity: 1;
+
+  transform:
+    translateX(-50%)
+    translateY(0);
+}
+
+
+/* =========================================================
+   RESPONSIVE REFINEMENTS
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  .category-card {
+    border-radius: 14px;
+  }
+
+  .nav-tab-btn {
+    border-radius: 8px;
+  }
+
+  .eco-card {
+    border-radius: 14px;
+  }
+
+  .eco-modal {
+    border-radius: 18px;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

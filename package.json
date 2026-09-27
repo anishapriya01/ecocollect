@@ -1,0 +1,26 @@
+{
+  "name": "ecocollect-waste-management",
+  "version": "1.0.0",
+  "description": "EcoCollect: Smart Waste Collection & Recycling Platform MVP",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "eco",
+    "waste-management",
+    "recycling",
+    "sustainability",
+    "express",
+    "mysql"
+  ],
+  "author": "EcoCollect Team",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^18.0.4",
+    "express": "^4.19.2",
+    "mysql2": "^3.9.7"
+  }
+}

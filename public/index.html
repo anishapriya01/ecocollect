@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full font-sans antialiased selection:bg-emerald-600 selection:text-white">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoCollect — Waste Collection & Recycling Management</title>
+  <meta name="description" content="Streamlined waste collection scheduling, real-time order tracking, and recycling logistics management.">
+  
+  <!-- Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+          },
+          boxShadow: {
+            'emerald-glow': '0 8px 25px -5px rgba(16, 185, 129, 0.35)',
+            'amber-glow': '0 8px 25px -5px rgba(245, 158, 11, 0.3)',
+            'blue-glow': '0 8px 25px -5px rgba(59, 130, 246, 0.3)'
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#F9FAFB] text-gray-900 min-h-screen flex flex-col font-sans">
+
+  <!-- ========================================== -->
+  <!-- FULL-WIDTH STRIPE/LINEAR STYLE HEADER -->
+  <!-- ========================================== -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-gray-200/90 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Brand Identity -->
+        <div class="flex items-center gap-3 cursor-pointer group" onclick="switchTab('request')">
+          <div class="relative w-8.5 h-8.5 rounded-lg bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-600 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-emerald-600/20 group-hover:scale-105 transition-transform">
+            <i class="fa-solid fa-leaf text-emerald-200"></i>
+            <span class="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-lg text-gray-900 tracking-tight">Eco<span class="text-emerald-700">Collect</span></span>
+            <span class="text-xs text-gray-300 font-normal">|</span>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200/70 hidden sm:inline-block">Recycling Logistics</span>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation Tabs -->
+        <nav class="hidden md:flex items-center space-x-1">
+          <button onclick="switchTab('request')" id="tab-btn-request" class="nav-tab-btn active px-3.5 py-2 rounded-lg text-xs font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 flex items-center gap-2">
+            <i class="fa-solid fa-calendar-plus text-xs text-emerald-600"></i>
+            <span>Request Pickup</span>
+          </button>
+          
+          <button onclick="switchTab('track')" id="tab-btn-track" class="nav-tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 flex items-center gap-2">
+            <i class="fa-solid fa-magnifying-glass text-xs text-gray-400"></i>
+            <span>Track Order</span>
+          </button>
+          
+          <button onclick="switchTab('guide')" id="tab-btn-guide" class="nav-tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 flex items-center gap-2">
+            <i class="fa-solid fa-book-open text-xs text-gray-400"></i>
+            <span>Sorting Matrix</span>
+          </button>
+          
+          <button onclick="switchTab('admin')" id="tab-btn-admin" class="nav-tab-btn px-3.5 py-2 rounded-lg text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 flex items-center gap-2 relative">
+            <i class="fa-solid fa-sliders text-xs text-gray-400"></i>
+            <span>Dispatch Console</span>
+            <span id="live-poll-indicator" class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          </button>
+        </nav>
+
+        <!-- Right Quick Status Badge -->
+        <div class="hidden sm:flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 shadow-xs">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span>LIVE DISPATCH (5s POLL)</span>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100">
+          <i class="fa-solid fa-bars text-base" id="mobile-menu-icon"></i>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Navigation -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 bg-white px-4 py-3 space-y-1 shadow-md">
+      <button onclick="switchTab('request'); toggleMobileMenu();" class="w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200/70 flex items-center gap-2.5">
+        <i class="fa-solid fa-calendar-plus text-emerald-600"></i> Request Pickup
+      </button>
+      <button onclick="switchTab('track'); toggleMobileMenu();" class="w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2.5">
+        <i class="fa-solid fa-magnifying-glass text-gray-400"></i> Track Order
+      </button>
+      <button onclick="switchTab('guide'); toggleMobileMenu();" class="w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2.5">
+        <i class="fa-solid fa-book-open text-gray-400"></i> Sorting Matrix
+      </button>
+      <button onclick="switchTab('admin'); toggleMobileMenu();" class="w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2.5">
+        <i class="fa-solid fa-sliders text-gray-400"></i> Dispatch Console
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- MAIN CONTENT CONTAINER -->
+  <!-- ========================================== -->
+  <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 py-8">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: REQUEST COLLECTION (USER PORTAL) -->
+    <!-- ========================================== -->
+    <section id="tab-request" class="tab-content space-y-8 animate-fade-in">
+      
+      <!-- Clean Human Hero Section with Subtle Background Gradient Mesh -->
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50/70 via-teal-50/30 to-white p-6 sm:p-8 border border-emerald-100/80 shadow-xs space-y-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100/80 text-emerald-800 border border-emerald-200">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+          <span>Zero-Landfill Resource Recovery</span>
+        </div>
+        
+        <h1 class="font-display font-bold text-2xl sm:text-3xl text-gray-900 tracking-tight leading-snug">
+          Schedule a Waste & Recycling Pickup
+        </h1>
+        <p class="text-sm text-gray-600 max-w-2xl leading-relaxed">
+          Reliable home pickups for your recyclables, e-waste, organic material, and hazardous items. Scheduled in seconds with real-time tracking.
+        </p>
+      </div>
+
+      <!-- Main Form Card -->
+      <form id="pickup-form" onsubmit="handleRequestSubmit(event)" class="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 shadow-sm space-y-8">
+        
+        <!-- STEP 1: Select Waste Category -->
+        <div class="space-y-4">
+          <div>
+            <h2 class="font-display font-semibold text-base text-gray-900 flex items-center gap-2">
+              <span class="w-5.5 h-5.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center justify-center shadow-xs">1</span>
+              <span>Select Waste Category</span>
+            </h2>
+            <p class="text-xs text-gray-500 mt-0.5 ml-7">Choose the material stream for collection.</p>
+          </div>
+
+          <!-- Category Selection Cards with Soft Tinted Color Accents -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5" id="category-cards-container">
+            
+            <!-- Organic Card -->
+            <div onclick="selectCategory('Organic')" id="cat-card-Organic" class="category-card cursor-pointer rounded-xl border border-gray-200 bg-white p-4.5 hover:border-emerald-300 hover:bg-emerald-50/30 transition-all group">
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl border border-emerald-100 group-hover:scale-105 transition-transform">
+                  🥬
+                </div>
+                <span class="card-check-icon hidden text-emerald-600 text-base"><i class="fa-solid fa-circle-check"></i></span>
+              </div>
+              <h3 class="font-semibold text-sm text-gray-900 group-hover:text-emerald-900 transition-colors">Organic</h3>
+              <p class="text-xs text-gray-500 mt-1 leading-relaxed">Food scraps, yard waste, compostables.</p>
+            </div>
+
+            <!-- Recyclables Card -->
+            <div onclick="selectCategory('Recyclable')" id="cat-card-Recyclable" class="category-card cursor-pointer rounded-xl border border-gray-200 bg-white p-4.5 hover:border-blue-300 hover:bg-blue-50/30 transition-all group">
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center text-xl border border-blue-100 group-hover:scale-105 transition-transform">
+                  ♻️
+                </div>
+                <span class="card-check-icon hidden text-blue-600 text-base"><i class="fa-solid fa-circle-check"></i></span>
+              </div>
+              <h3 class="font-semibold text-sm text-gray-900 group-hover:text-blue-900 transition-colors">Recyclables</h3>
+              <p class="text-xs text-gray-500 mt-1 leading-relaxed">Cardboard boxes, PET bottles, cans, glass.</p>
+            </div>
+
+            <!-- E-Waste Card -->
+            <div onclick="selectCategory('E-Waste')" id="cat-card-E-Waste" class="category-card cursor-pointer rounded-xl border border-gray-200 bg-white p-4.5 hover:border-purple-300 hover:bg-purple-50/30 transition-all group">
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center text-xl border border-purple-100 group-hover:scale-105 transition-transform">
+                  🔌
+                </div>
+                <span class="card-check-icon hidden text-purple-600 text-base"><i class="fa-solid fa-circle-check"></i></span>
+              </div>
+              <h3 class="font-semibold text-sm text-gray-900 group-hover:text-purple-900 transition-colors">E-Waste</h3>
+              <p class="text-xs text-gray-500 mt-1 leading-relaxed">Laptops, phones, chargers, electronics.</p>
+            </div>
+
+            <!-- Hazardous Card -->
+            <div onclick="selectCategory('Hazardous')" id="cat-card-Hazardous" class="category-card cursor-pointer rounded-xl border border-gray-200 bg-white p-4.5 hover:border-amber-300 hover:bg-amber-50/30 transition-all group">
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center text-xl border border-amber-100 group-hover:scale-105 transition-transform">
+                  ⚠️
+                </div>
+                <span class="card-check-icon hidden text-amber-600 text-base"><i class="fa-solid fa-circle-check"></i></span>
+              </div>
+              <h3 class="font-semibold text-sm text-gray-900 group-hover:text-amber-900 transition-colors">Hazardous</h3>
+              <p class="text-xs text-gray-500 mt-1 leading-relaxed">Paints, batteries, motor oil, chemicals.</p>
+            </div>
+
+          </div>
+
+          <!-- Compliance Tip Box -->
+          <div id="category-tip-box" class="rounded-xl bg-emerald-50/70 p-4 border border-emerald-200/80 text-xs text-emerald-950 flex items-start gap-3 shadow-xs">
+            <i class="fa-solid fa-lightbulb text-emerald-600 text-base mt-0.5"></i>
+            <div>
+              <span class="font-bold text-emerald-900" id="cat-tip-title">Compliance Guidelines:</span>
+              <span id="cat-tip-text" class="ml-1 text-emerald-800">Ensure items are separated and placed in accessible containers.</span>
+            </div>
+          </div>
+          
+          <input type="hidden" id="selected-category" name="category" value="Recyclable" required>
+        </div>
+
+        <!-- STEP 2: Location & Resident Info -->
+        <div class="space-y-4 pt-4 border-t border-gray-100">
+          <div>
+            <h2 class="font-display font-semibold text-base text-gray-900 flex items-center gap-2">
+              <span class="w-5.5 h-5.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center justify-center shadow-xs">2</span>
+              <span>Pickup Address & Contact Details</span>
+            </h2>
+            <p class="text-xs text-gray-500 mt-0.5 ml-7">Used by collection dispatchers to locate your address.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="form-name" class="block text-xs font-semibold text-gray-700 mb-1.5">Full Name *</label>
+              <input type="text" id="form-name" required placeholder="Jane Doe"
+                class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm text-gray-900 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all">
+            </div>
+
+            <div>
+              <label for="form-phone" class="block text-xs font-semibold text-gray-700 mb-1.5">Phone Number *</label>
+              <input type="tel" id="form-phone" required placeholder="+1 (555) 019-2834"
+                class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm text-gray-900 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all">
+            </div>
+          </div>
+
+          <div>
+            <label for="form-address" class="block text-xs font-semibold text-gray-700 mb-1.5">Street Address & Unit / Gate Code *</label>
+            <input type="text" id="form-address" required placeholder="742 Evergreen Terrace, Apt 4B"
+              class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm text-gray-900 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all">
+          </div>
+        </div>
+
+        <!-- STEP 3: Logistics Scheduling -->
+        <div class="space-y-4 pt-4 border-t border-gray-100">
+          <div>
+            <h2 class="font-display font-semibold text-base text-gray-900 flex items-center gap-2">
+              <span class="w-5.5 h-5.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center justify-center shadow-xs">3</span>
+              <span>Pickup Date & Time Slot</span>
+            </h2>
+            <p class="text-xs text-gray-500 mt-0.5 ml-7">Select when you want our team to arrive.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="form-date" class="block text-xs font-semibold text-gray-700 mb-1.5">Date *</label>
+              <input type="date" id="form-date" required
+                class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm font-semibold text-gray-900 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1.5">Preferred Time Window *</label>
+              <div class="space-y-2" id="timeslot-container">
+                <button type="button" onclick="selectTimeSlot('Morning (8am - 12pm)')" class="timeslot-pill active w-full text-left px-3.5 py-2.5 rounded-lg border border-gray-200 bg-white text-xs text-gray-800 font-medium flex items-center justify-between hover:bg-gray-50 transition-all">
+                  <span>🌅 Morning Window (8:00 AM – 12:00 PM)</span>
+                  <i class="fa-solid fa-circle-check text-emerald-600 text-xs"></i>
+                </button>
+                <button type="button" onclick="selectTimeSlot('Afternoon (12pm - 4pm)')" class="timeslot-pill w-full text-left px-3.5 py-2.5 rounded-lg border border-gray-200 bg-white text-xs text-gray-700 flex items-center justify-between hover:bg-gray-50 transition-all">
+                  <span>☀️ Afternoon Window (12:00 PM – 4:00 PM)</span>
+                  <i class="fa-solid fa-circle-check text-emerald-600 text-xs hidden"></i>
+                </button>
+                <button type="button" onclick="selectTimeSlot('Evening (4pm - 8pm)')" class="timeslot-pill w-full text-left px-3.5 py-2.5 rounded-lg border border-gray-200 bg-white text-xs text-gray-700 flex items-center justify-between hover:bg-gray-50 transition-all">
+                  <span>🌙 Evening Window (4:00 PM – 8:00 PM)</span>
+                  <i class="fa-solid fa-circle-check text-emerald-600 text-xs hidden"></i>
+                </button>
+              </div>
+              <input type="hidden" id="selected-timeslot" name="slot" value="Morning (8am - 12pm)">
+            </div>
+          </div>
+
+          <div>
+            <label for="form-notes" class="block text-xs font-semibold text-gray-700 mb-1.5">Additional Notes (Optional)</label>
+            <textarea id="form-notes" rows="2" placeholder="Item quantity, box breakdown, or access code..."
+              class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm text-gray-900 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none resize-none transition-all"></textarea>
+          </div>
+        </div>
+
+        <!-- Submit Button with Vibrant Emerald Gradient & Glow -->
+        <div class="pt-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-2 text-xs text-gray-500">
+            <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+            <span>Instant confirmation & tracking ID generated upon submission.</span>
+          </div>
+
+          <button type="submit" id="submit-request-btn"
+            class="w-full sm:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-sm font-bold shadow-emerald-glow transform hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2.5 cursor-pointer">
+            <span>Schedule Pickup Now</span>
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </button>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: LIVE TRACKING PORTAL -->
+    <!-- ========================================== -->
+    <section id="tab-track" class="tab-content space-y-6 hidden animate-fade-in">
+      
+      <div class="space-y-2 pb-2 border-b border-gray-200">
+        <h1 class="font-display font-bold text-2xl text-gray-900 tracking-tight">Track Your Request</h1>
+        <p class="text-sm text-gray-600">Enter your 7-character Tracking ID to check status updates.</p>
+      </div>
+
+      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm space-y-4">
+        <div class="max-w-md flex items-center gap-2">
+          <input type="text" id="track-id-input" placeholder="e.g. ECO-8392"
+            class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 font-mono text-sm uppercase font-bold tracking-wider text-gray-900 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 outline-none">
+          <button onclick="handleTrackSearch()" class="px-6 py-2.5 rounded-lg bg-gray-900 hover:bg-black text-white font-bold text-xs transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap shadow-sm">
+            <span>Search</span>
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+
+        <!-- Recent Search Pills -->
+        <div id="recent-trackings-container" class="hidden pt-1">
+          <span class="text-xs text-gray-400 font-medium mr-2">Recent Lookups:</span>
+          <div class="inline-flex flex-wrap gap-1.5" id="recent-track-pills"></div>
+        </div>
+      </div>
+
+      <!-- Tracking Results Container -->
+      <div id="tracking-result-container" class="hidden space-y-6">
+        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm space-y-6">
+          
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
+            <div>
+              <div class="flex items-center gap-2.5">
+                <span class="font-mono text-2xl font-bold text-gray-900" id="result-tracking-id">ECO-0000</span>
+                <span id="result-category-badge" class="px-2.5 py-0.5 rounded-md text-xs font-semibold border">Category</span>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Submitted on <span id="result-created-date" class="font-medium text-gray-700"></span></p>
+            </div>
+
+            <div>
+              <span id="result-status-badge" class="px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border shadow-xs">
+                Pending
+              </span>
+            </div>
+          </div>
+
+          <!-- Stepper Visual -->
+          <div class="py-2">
+            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Request Timeline</h4>
+            <div class="relative flex items-center justify-between max-w-xl mx-auto px-4">
+              <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-1 bg-gray-200 z-0"></div>
+              <div id="stepper-progress-bar" class="absolute left-6 top-1/2 -translate-y-1/2 h-1 bg-emerald-600 z-0 transition-all duration-300" style="width: 0%;"></div>
+
+              <!-- Step 1 -->
+              <div class="relative z-10 flex flex-col items-center">
+                <div id="step-icon-1" class="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-xs shadow-emerald-glow">
+                  <i class="fa-solid fa-check"></i>
+                </div>
+                <span class="mt-2 text-xs font-semibold text-gray-900">Submitted</span>
+              </div>
+
+              <!-- Step 2 -->
+              <div class="relative z-10 flex flex-col items-center">
+                <div id="step-icon-2" class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 font-bold flex items-center justify-center text-xs border border-gray-300">
+                  <i class="fa-solid fa-truck"></i>
+                </div>
+                <span class="mt-2 text-xs font-semibold text-gray-500" id="step-label-2">Scheduled</span>
+              </div>
+
+              <!-- Step 3 -->
+              <div class="relative z-10 flex flex-col items-center">
+                <div id="step-icon-3" class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 font-bold flex items-center justify-center text-xs border border-gray-300">
+                  <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <span class="mt-2 text-xs font-semibold text-gray-500" id="step-label-3">Completed</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info Details -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-100 text-xs sm:text-sm">
+            <div class="bg-gray-50 p-4 rounded-lg space-y-2 border border-gray-200">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block">Pickup Logistics</span>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Scheduled Date:</span>
+                <span id="result-date" class="font-semibold text-gray-900"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-500">Time Window:</span>
+                <span id="result-slot" class="font-semibold text-gray-900"></span>
+              </div>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-lg space-y-2 border border-gray-200">
+              <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block">Resident & Destination</span>
+              <div>
+                <span id="result-resident" class="font-semibold text-gray-900 block"></span>
+                <span id="result-address" class="text-gray-600 block mt-0.5"></span>
+              </div>
+              <div class="pt-2 border-t border-gray-200 text-xs text-gray-500">
+                <span class="font-semibold text-gray-700">Notes:</span>
+                <span id="result-notes" class="text-gray-600 ml-1">No notes attached.</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: SORTING MATRIX & GUIDE -->
+    <!-- ========================================== -->
+    <section id="tab-guide" class="tab-content space-y-6 hidden animate-fade-in">
+      
+      <div class="space-y-2 pb-2 border-b border-gray-200">
+        <h1 class="font-display font-bold text-2xl text-gray-900 tracking-tight">Recycling & Sorting Standards</h1>
+        <p class="text-sm text-gray-600">Review guidelines for proper material classification and disposal rules.</p>
+      </div>
+
+      <!-- Impact Calculator Card -->
+      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="font-display font-bold text-base text-gray-900 flex items-center gap-2">
+              <i class="fa-solid fa-leaf text-emerald-600"></i>
+              Environmental Impact Estimator
+            </h3>
+            <p class="text-xs text-gray-500 mt-0.5">Estimate your household's annual CO₂ savings by recycling.</p>
+          </div>
+
+          <div class="flex items-center gap-6 bg-emerald-50/60 px-5 py-3 rounded-xl border border-emerald-200/80">
+            <div>
+              <span class="text-[11px] text-emerald-800 uppercase font-bold block">CO₂ Offset</span>
+              <span id="calc-co2" class="font-bold text-xl text-emerald-900">1,716 kg</span>
+            </div>
+            <div class="h-8 w-px bg-emerald-200"></div>
+            <div>
+              <span class="text-[11px] text-amber-800 uppercase font-bold block">Trees Equivalent</span>
+              <span id="calc-trees" class="font-bold text-xl text-amber-900">81.7 🌲</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-2 pt-2">
+          <div class="flex justify-between text-xs text-gray-700 font-semibold">
+            <span>Weekly Household Recycled Weight:</span>
+            <span id="calc-weight-label" class="font-mono text-emerald-700 font-bold">15 kg / week</span>
+          </div>
+          <input type="range" id="co2-slider" min="1" max="100" value="15" oninput="updateCo2Calculator()"
+            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+        </div>
+      </div>
+
+      <!-- Categories Matrix Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="guide-cards-grid">
+        <!-- JS Populates Category Cards -->
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: DISPATCH CONTROL (ADMIN DASHBOARD) -->
+    <!-- ========================================== -->
+    <section id="tab-admin" class="tab-content space-y-6 hidden animate-fade-in">
+      
+      <!-- Admin Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-gray-200">
+        <div>
+          <h1 class="font-display font-bold text-2xl text-gray-900 tracking-tight">Dispatch Management Console</h1>
+          <p class="text-xs text-gray-500 mt-0.5">Real-time queue management, live 5-second polling, and stream analytics.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="fetchAdminData()" class="px-3.5 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-bold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-rotate text-emerald-600 text-xs"></i>
+            <span>Refresh</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Clean Metric Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Total Orders -->
+        <div class="bg-white rounded-xl border border-gray-200 p-4.5 shadow-sm space-y-2">
+          <div class="flex items-center justify-between text-xs font-bold text-gray-500 uppercase tracking-wider">
+            <span>Total Requests</span>
+            <i class="fa-solid fa-inbox text-gray-400"></i>
+          </div>
+          <p class="font-display font-bold text-2xl text-gray-900" id="stat-total">0</p>
+          <p class="text-[11px] text-gray-400 font-medium">All logged pickups</p>
+        </div>
+
+        <!-- Pending Action -->
+        <div class="bg-white rounded-xl border border-amber-200 bg-gradient-to-br from-white via-amber-50/20 to-white p-4.5 shadow-sm space-y-2">
+          <div class="flex items-center justify-between text-xs font-bold text-amber-800 uppercase tracking-wider">
+            <span>Pending Action</span>
+            <i class="fa-solid fa-clock text-amber-600"></i>
+          </div>
+          <p class="font-display font-bold text-2xl text-amber-900" id="stat-pending">0</p>
+          <div class="w-full bg-amber-100 h-1.5 rounded-full overflow-hidden">
+            <div id="bar-pending-pct" class="bg-amber-600 h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Scheduled -->
+        <div class="bg-white rounded-xl border border-blue-200 bg-gradient-to-br from-white via-blue-50/20 to-white p-4.5 shadow-sm space-y-2">
+          <div class="flex items-center justify-between text-xs font-bold text-blue-800 uppercase tracking-wider">
+            <span>Scheduled</span>
+            <i class="fa-solid fa-truck text-blue-600"></i>
+          </div>
+          <p class="font-display font-bold text-2xl text-blue-900" id="stat-scheduled">0</p>
+          <div class="w-full bg-blue-100 h-1.5 rounded-full overflow-hidden">
+            <div id="bar-scheduled-pct" class="bg-blue-600 h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Completed -->
+        <div class="bg-white rounded-xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/20 to-white p-4.5 shadow-sm space-y-2">
+          <div class="flex items-center justify-between text-xs font-bold text-emerald-800 uppercase tracking-wider">
+            <span>Completed</span>
+            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+          </div>
+          <div class="flex items-baseline justify-between">
+            <p class="font-display font-bold text-2xl text-emerald-900" id="stat-completed">0</p>
+            <span class="text-xs font-bold text-emerald-700" id="stat-diverted">0 kg Saved</span>
+          </div>
+          <div class="w-full bg-emerald-100 h-1.5 rounded-full overflow-hidden">
+            <div id="bar-completed-pct" class="bg-emerald-600 h-full rounded-full transition-all duration-300" style="width: 0%;"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live Category Distribution Breakdown Visual Bar -->
+      <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="font-display font-semibold text-sm text-gray-900">Stream Distribution Breakdown</h3>
+          <span class="text-xs font-mono text-gray-400 font-bold" id="distribution-total-label">0 Total Items</span>
+        </div>
+
+        <!-- Stacked Bar -->
+        <div class="w-full h-3 rounded-full bg-gray-100 overflow-hidden flex border border-gray-200" id="category-distribution-bar">
+          <div id="dist-organic" class="bg-emerald-600 h-full transition-all duration-300" style="width: 25%;" title="Organic"></div>
+          <div id="dist-recyclable" class="bg-blue-600 h-full transition-all duration-300" style="width: 25%;" title="Recyclable"></div>
+          <div id="dist-ewaste" class="bg-purple-600 h-full transition-all duration-300" style="width: 25%;" title="E-Waste"></div>
+          <div id="dist-hazardous" class="bg-amber-600 h-full transition-all duration-300" style="width: 25%;" title="Hazardous"></div>
+        </div>
+
+        <!-- Legend Pills -->
+        <div class="flex flex-wrap items-center justify-between gap-3 text-xs font-semibold text-gray-600 pt-1">
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Organic: <span id="pct-organic" class="font-mono font-bold text-gray-900">25%</span></span>
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span> Recyclables: <span id="pct-recyclable" class="font-mono font-bold text-gray-900">25%</span></span>
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span> E-Waste: <span id="pct-ewaste" class="font-mono font-bold text-gray-900">25%</span></span>
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-600"></span> Hazardous: <span id="pct-hazardous" class="font-mono font-bold text-gray-900">25%</span></span>
+        </div>
+      </div>
+
+      <!-- Controls & Search Toolbar -->
+      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="relative w-full sm:w-80">
+          <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+          </span>
+          <input type="text" id="admin-search-input" onkeyup="filterAdminTable()" placeholder="Search ID, resident, address..."
+            class="w-full pl-8 pr-3 py-1.5 rounded-md border border-gray-300 text-xs text-gray-900 focus:border-emerald-600 outline-none">
+        </div>
+
+        <div class="flex items-center gap-2 text-xs text-gray-600 font-semibold">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Auto-polling (5s)</span>
+        </div>
+      </div>
+
+      <!-- Request Management Table -->
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-gray-50 text-gray-500 text-[11px] font-extrabold uppercase tracking-wider border-b border-gray-200">
+                <th class="py-3.5 px-4">Tracking ID</th>
+                <th class="py-3.5 px-3">Category</th>
+                <th class="py-3.5 px-3">Resident Details</th>
+                <th class="py-3.5 px-3">Pickup Address</th>
+                <th class="py-3.5 px-3">Window</th>
+                <th class="py-3.5 px-3">Status</th>
+                <th class="py-3.5 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-table-body" class="divide-y divide-gray-100 text-xs sm:text-sm">
+              <!-- JS Populates Live Rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State -->
+        <div id="admin-empty-state" class="p-12 text-center space-y-3">
+          <div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 mx-auto flex items-center justify-center text-xl">
+            <i class="fa-solid fa-inbox"></i>
+          </div>
+          <div class="space-y-1">
+            <h4 class="font-bold text-sm text-gray-900">No Pickup Requests Found</h4>
+            <p class="text-xs text-gray-500 max-w-sm mx-auto">The database has 0 records. Submit a new request using the form to test live polling.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- FOOTER -->
+  <!-- ========================================== -->
+  <footer class="mt-auto bg-white border-t border-gray-200 py-6 text-xs text-gray-500">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-gray-900">EcoCollect Platform</span>
+        <span>— Production Build</span>
+      </div>
+      <div class="flex items-center gap-4 text-gray-400 font-medium">
+        <span>SQLite Clean Slate</span>
+        <span>•</span>
+        <span>Port 8080 Active</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================== -->
+  <!-- SUCCESS MODAL POPUP -->
+  <!-- ========================================== -->
+  <div id="success-modal" class="fixed inset-0 z-50 hidden bg-gray-900/50 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+    <div class="bg-white rounded-xl max-w-sm w-full p-6 shadow-xl space-y-5 text-center border border-gray-200">
+      
+      <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 mx-auto flex items-center justify-center text-xl shadow-emerald-glow">
+        <i class="fa-solid fa-check"></i>
+      </div>
+
+      <div class="space-y-1">
+        <h3 class="font-display font-bold text-lg text-gray-900">Request Confirmed</h3>
+        <p class="text-xs text-gray-500">Your collection request has been committed to the dispatch queue.</p>
+      </div>
+
+      <!-- Tracking ID Display Box -->
+      <div class="bg-gray-50 border border-gray-200 p-4 rounded-lg space-y-1">
+        <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Your Tracking ID</span>
+        <div class="flex items-center justify-center gap-2">
+          <span id="modal-tracking-id" class="font-mono text-2xl font-bold text-gray-900 tracking-wider">ECO-0000</span>
+          <button onclick="copyModalTrackingId()" title="Copy Tracking ID" class="p-1.5 text-gray-500 hover:text-gray-900 bg-white rounded-md border border-gray-200 transition-all cursor-pointer">
+            <i class="fa-regular fa-copy text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center gap-2 pt-1">
+        <button onclick="closeModalAndTrack()" class="w-full py-2.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer">
+          Track Live Status
+        </button>
+        <button onclick="closeSuccessModal()" class="w-full py-2.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs transition-all cursor-pointer">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+  <!-- Application Script -->
+  <script src="app.js"></script>
+</body>
+</html>
