@@ -12,15 +12,13 @@
     "waste-management",
     "recycling",
     "sustainability",
-    "express",
-    "mysql"
+    "express"
   ],
   "author": "EcoCollect Team",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^18.0.4",
-    "express": "^4.19.2",
-    "mysql2": "^3.9.7"
+    "express": "^4.19.2"
   }
 }
